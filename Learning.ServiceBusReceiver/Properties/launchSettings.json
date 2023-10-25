@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Learning.ServiceBusReceiver": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
