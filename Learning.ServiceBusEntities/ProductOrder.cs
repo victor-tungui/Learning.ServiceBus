@@ -13,12 +13,12 @@ public class ProductOrder
 	/// <summary>
 	/// Order Identifier
 	/// </summary>
-	public int OrderId { get; set; }
+	public required string OrderId { get; set; }
 
 	/// <summary>
 	/// Total
 	/// </summary>
-	public decimal Total { get; set; }
+	public decimal Total { get; set; } = decimal.Zero;
 
 	/// <summary>
 	/// Created Date
