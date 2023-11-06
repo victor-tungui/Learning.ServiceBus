@@ -1,4 +1,6 @@
-﻿using Learning.ServiceBusReceiver;
+﻿using Learning.ServiceBusEntities.Constants;
+using Learning.ServiceBusEntities.Events;
+using Learning.ServiceBusReceiver;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,16 +23,37 @@ if (scopeFactory is not null)
 {
 	using IServiceScope scope = scopeFactory.CreateScope();
 	var poReceiver = scope.ServiceProvider.GetRequiredService<ProductOrderReceiver>();
+	string? command;
 
-	if (poReceiver is not null)
+	Console.WriteLine(@"If you want to stop Processing Messages, please type ""Exit"" to leave the app. Type ""Read"" to process message");
+	do
 	{
-
-		List<string> messages = await poReceiver.ReceiveAndProcessText();
-		if (messages is not null)
+		command = Console.ReadLine();
+		if (string.IsNullOrEmpty(command))
 		{
-			messages.ForEach(msg => Console.WriteLine($"Message: {msg}"));
+			command = "Running";
 		}
-	}
+
+		command = command.ToUpper();
+
+		switch (command)
+		{
+			case CommandConstants.READ_COMMAND:
+				poReceiver.OnMessageRead += ProductOrderMessageReceived;
+				await poReceiver.ReceiveAndProcess(1);
+				break;
+			case CommandConstants.EXIT_COMMAND:
+				await poReceiver.StopProcessing();
+				Console.WriteLine($"Closing Reader");
+				break;
+		}
+
+	} while (command != CommandConstants.EXIT_COMMAND);
+}
+
+static void ProductOrderMessageReceived(object? sender, ReadMessageArgs e)
+{
+	Console.WriteLine($"The message was received: Subject = {e.Subject}, Body: {e.Body}, Time (UTC): {e.ProcessedAt.ToLongDateString()}");
 }
 
 await host.RunAsync();

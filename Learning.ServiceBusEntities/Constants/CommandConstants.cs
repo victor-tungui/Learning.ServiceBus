@@ -13,5 +13,7 @@ namespace Learning.ServiceBusEntities.Constants
 		public const string TEXT_COMMAND = "TEXT";
 
 		public const string ORDER_COMMAND = "ORDER";
+
+		public const string READ_COMMAND = "READ";
 	}
 }

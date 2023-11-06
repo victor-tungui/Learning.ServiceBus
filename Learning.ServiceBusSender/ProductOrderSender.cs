@@ -39,6 +39,7 @@ internal class ProductOrderSender
 		AzureSB.ServiceBusSender sender = ServiceBusSenderInstance;
 
 		var message = new ServiceBusMessage(text);
+		message.Subject = "Text Message";
 
 		await sender.SendMessageAsync(message);
 
